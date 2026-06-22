@@ -1,65 +1,33 @@
-# Architecture Diagram
+# System Architecture
 
 ```mermaid
 graph TB
     subgraph Client
-        WEB[Web App<br/>React / Next.js]
-        MOBILE[Mobile App<br/>React Native]
+        UI[HTML/CSS/Bootstrap UI]
     end
 
-    subgraph CDN
-        CDN[Cloudflare / AWS CloudFront]
+    subgraph Server
+        N[Nginx]
+        DJ[Django + DRF]
+        CH[Channels / WebSocket]
+        CL[Celery Workers]
     end
 
-    subgraph "API Gateway / Load Balancer"
-        LB[Nginx / AWS ALB]
+    subgraph Storage
+        PG[(PostgreSQL)]
+        RD[(Redis)]
+        S3[(S3 / MinIO)]
+        ES[(Elasticsearch)]
     end
 
-    subgraph "Backend Services"
-        API[API Server<br/>Node.js / Express]
-        WS[WebSocket Server<br/>Socket.io]
-        AUTH[Auth Service<br/>JWT + OAuth]
-        NOTIF[Notification Service]
-    end
-
-    subgraph "AI / ML Microservices"
-        AI_TUTOR[AI Tutor<br/>LLM / GPT]
-        GRADING[Auto Grader<br/>NLP + ML]
-        ANALYTICS[Analytics Engine<br/>Python / TensorFlow]
-        PLAG[Plagiarism Check]
-    end
-
-    subgraph "Data Layer"
-        PSQL[(PostgreSQL<br/>Primary DB)]
-        REDIS[(Redis<br/>Cache + Session)]
-        S3[(S3 / Cloudinary<br/>Media Storage)]
-        ES[(Elasticsearch<br/>Search)]
-    end
-
-    subgraph "External Services"
-        OAUTH[Google / GitHub OAuth]
-        EMAIL[SMTP / SendGrid]
-        VIDEO[Zoom / Jitsi API]
-    end
-
-    WEB --> CDN
-    MOBILE --> CDN
-    CDN --> LB
-    LB --> API
-    LB --> WS
-    API --> AUTH
-    API --> NOTIF
-    API --> AI_TUTOR
-    API --> GRADING
-    API --> ANALYTICS
-    API --> PLAG
-    API --> PSQL
-    API --> REDIS
-    API --> S3
-    API --> ES
-    API --> OAUTH
-    API --> EMAIL
-    API --> VIDEO
-    WS --> REDIS
-    NOTIF --> EMAIL
+    UI -->|HTTPS| N
+    N -->|Static| UI
+    N -->|API| DJ
+    DJ --> PG
+    DJ --> RD
+    DJ --> S3
+    DJ --> ES
+    CH --> RD
+    CL --> RD
+    CL --> PG
 ```

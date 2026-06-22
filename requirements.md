@@ -152,15 +152,15 @@ Grade (id, student_id, course_id, total_score, letter_grade)
 
 ## 7. Tech Stack Requirements
 
-- **Frontend**: React / Next.js, TypeScript, Tailwind CSS
-- **Backend**: Node.js + Express (or Django/Python)
+- **Frontend**: HTML, CSS, Bootstrap
+- **Backend**: Python (Django / Flask)
 - **Database**: PostgreSQL (primary), Redis (caching)
-- **Real-time**: WebSocket / Socket.io for live classes
-- **AI/ML**: Python microservice (FastAPI) for AI features
+- **Real-time**: WebSocket / Django Channels for live classes
+- **AI/ML**: Python (TensorFlow / PyTorch / scikit-learn)
 - **Storage**: AWS S3 / Cloudinary for media files
 - **Auth**: JWT + OAuth 2.0
 - **CI/CD**: GitHub Actions, Docker
-- **Hosting**: AWS / Vercel / DigitalOcean
+- **Hosting**: AWS / DigitalOcean / PythonAnywhere
 
 ---
 

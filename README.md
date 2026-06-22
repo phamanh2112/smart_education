@@ -33,19 +33,19 @@ A modern online education platform connecting teachers and students through smar
 
 | Layer          | Technology                           |
 |----------------|--------------------------------------|
-| Frontend       | React / Next.js, Tailwind CSS        |
-| Backend        | Node.js / Express (or Django)        |
+| Frontend       | HTML, CSS, Bootstrap                 |
+| Backend        | Python (Django / Flask)             |
 | Database       | PostgreSQL + Redis (caching)         |
-| Real-time      | WebSocket / Socket.io                |
+| Real-time      | WebSocket / Django Channels          |
 | AI/ML          | Python (TensorFlow / PyTorch)        |
-| Cloud          | AWS / Google Cloud / Azure           |
+| Cloud          | AWS / DigitalOcean                   |
 | Auth           | JWT + OAuth 2.0                      |
 | CI/CD          | GitHub Actions + Docker              |
 
 ## Getting Started
 
 ### Prerequisites
-- Node.js v18+
+- Python 3.10+
 - PostgreSQL 14+
 - Redis
 
@@ -55,24 +55,28 @@ A modern online education platform connecting teachers and students through smar
 git clone https://github.com/phamanh2112/education-online-smart.git
 cd education-online-smart
 
+# Create virtual environment
+python -m venv venv
+source venv/bin/activate  # Windows: venv\Scripts\activate
+
 # Install dependencies
-npm install
+pip install -r requirements.txt
 
 # Set up environment variables
 cp .env.example .env
 
 # Run database migrations
-npm run migrate
+python manage.py migrate
 
 # Start development server
-npm run dev
+python manage.py runserver
 ```
 
 ## Project Structure
 
 ```
-├── client/            # Frontend application
-├── server/            # Backend API server
+├── frontend/          # Frontend (HTML, CSS, Bootstrap)
+├── backend/           # Backend API (Python Django/Flask)
 ├── ai/                # AI/ML services
 ├── docs/              # Documentation
 ├── docker/            # Docker configuration
