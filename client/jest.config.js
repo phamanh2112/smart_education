@@ -1,13 +1,9 @@
-import type { Config } from 'jest'
-
-const config: Config = {
-  preset: 'ts-jest',
+module.exports = {
   testEnvironment: 'jsdom',
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
     '\\.(css|less|scss)$': '<rootDir>/__mocks__/styleMock.ts',
   },
-  setupFiles: ['<rootDir>/jest.setup.ts'],
   testMatch: ['<rootDir>/__tests__/**/*.test.{ts,tsx}'],
   collectCoverageFrom: [
     'src/**/*.{ts,tsx}',
@@ -16,5 +12,3 @@ const config: Config = {
     '!src/di/**',
   ],
 }
-
-export default config

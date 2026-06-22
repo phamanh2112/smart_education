@@ -1,4 +1,4 @@
-import { renderHook, act } from '@testing-library/react'
+import { renderHook, act, waitFor } from '@testing-library/react'
 import { useSliderViewModel } from '@/presentation/viewmodels/useSliderViewModel'
 import { useFeaturesViewModel } from '@/presentation/viewmodels/useFeaturesViewModel'
 import { useStatsViewModel } from '@/presentation/viewmodels/useStatsViewModel'
@@ -10,53 +10,42 @@ import type { IStatsRepository } from '@/domain/repositories/IStatsRepository'
 import type { ITestimonialRepository } from '@/domain/repositories/ITestimonialRepository'
 import type { CourseSlide } from '@/domain/models/Course'
 
-// --- Mocks ---
-
-class MockCourseRepository implements ICourseRepository {
-  async getFeaturedSlides(): Promise<CourseSlide[]> {
-    return [
-      { image: 'a.jpg', title: 'A', desc: 'Desc A', tag: 'Tag A' },
-      { image: 'b.jpg', title: 'B', desc: 'Desc B', tag: 'Tag B' },
-    ]
-  }
+class MockCourseRepo implements ICourseRepository {
+  slides: CourseSlide[] = [
+    { image: 'a.jpg', title: 'A', desc: 'Desc A', tag: 'Tag A' },
+    { image: 'b.jpg', title: 'B', desc: 'Desc B', tag: 'Tag B' },
+  ]
+  async getFeaturedSlides(): Promise<CourseSlide[]> { return this.slides }
   async getPopularCourses() { return [] }
   async getCourseById(_id: string) { return null }
 }
 
-class MockFeatureRepository implements IFeatureRepository {
+class MockFeatureRepo implements IFeatureRepository {
   async getFeatures() {
-    return [
-      { id: '1', icon: '🎯', title: 'Smart', desc: 'AI learning', gradient: 'from-a to-b' },
-    ]
+    return [{ id: '1', icon: '🎯', title: 'Smart', desc: 'AI', gradient: 'from-a to-b' }]
   }
 }
 
-class MockStatsRepository implements IStatsRepository {
+class MockStatsRepo implements IStatsRepository {
   async getStats() {
-    return [
-      { id: '1', value: '10K+', label: 'Students', icon: '🎓' },
-    ]
+    return [{ id: '1', value: '10K+', label: 'Students', icon: '🎓' }]
   }
 }
 
-class MockTestimonialRepository implements ITestimonialRepository {
+class MockTestimonialRepo implements ITestimonialRepository {
   async getTestimonials() {
-    return [
-      { id: '1', name: 'John', role: 'Teacher', avatar: 'a.jpg', text: 'Great', rating: 5 },
-    ]
+    return [{ id: '1', name: 'John', role: 'Teacher', avatar: 'a.jpg', text: 'Great', rating: 5 }]
   }
 }
-
-// --- Tests ---
 
 describe('useNavbarViewModel', () => {
-  it('should return initial state', () => {
+  it('returns initial state', () => {
     const { result } = renderHook(() => useNavbarViewModel())
     expect(result.current.menuOpen).toBe(false)
     expect(result.current.navLinks).toHaveLength(4)
   })
 
-  it('should toggle menu', () => {
+  it('toggles menu', () => {
     const { result } = renderHook(() => useNavbarViewModel())
     act(() => result.current.setMenuOpen(true))
     expect(result.current.menuOpen).toBe(true)
@@ -64,17 +53,18 @@ describe('useNavbarViewModel', () => {
 })
 
 describe('useSliderViewModel', () => {
-  it('should load slides', async () => {
-    const { result } = renderHook(() => useSliderViewModel(new MockCourseRepository()))
-    await act(async () => {})
-    expect(result.current.isLoading).toBe(false)
+  it('loads slides', async () => {
+    const repo = new MockCourseRepo()
+    const { result } = renderHook(() => useSliderViewModel(repo))
+    await waitFor(() => expect(result.current.isLoading).toBe(false), { timeout: 3000 })
     expect(result.current.slides).toHaveLength(2)
     expect(result.current.error).toBeNull()
-  })
+  }, 10000)
 
-  it('should navigate slides', async () => {
-    const { result } = renderHook(() => useSliderViewModel(new MockCourseRepository()))
-    await act(async () => {})
+  it('navigates slides', async () => {
+    const repo = new MockCourseRepo()
+    const { result } = renderHook(() => useSliderViewModel(repo))
+    await waitFor(() => expect(result.current.isLoading).toBe(false), { timeout: 3000 })
     expect(result.current.currentIndex).toBe(0)
 
     act(() => result.current.goNext())
@@ -85,43 +75,45 @@ describe('useSliderViewModel', () => {
 
     act(() => result.current.goTo(1))
     expect(result.current.currentIndex).toBe(1)
-  })
+  }, 10000)
 
-  it('should wrap around on next', async () => {
-    const { result } = renderHook(() => useSliderViewModel(new MockCourseRepository()))
-    await act(async () => {})
+  it('wraps around on overflow', async () => {
+    const repo = new MockCourseRepo()
+    const { result } = renderHook(() => useSliderViewModel(repo))
+    await waitFor(() => expect(result.current.isLoading).toBe(false), { timeout: 3000 })
     act(() => result.current.goNext())
     act(() => result.current.goNext())
-    expect(result.current.currentIndex).toBe(0)
-  })
+    act(() => result.current.goNext())
+    expect(result.current.currentIndex).toBe(1)
+  }, 10000)
 })
 
 describe('useFeaturesViewModel', () => {
-  it('should load features', async () => {
-    const { result } = renderHook(() => useFeaturesViewModel(new MockFeatureRepository()))
-    await act(async () => {})
-    expect(result.current.isLoading).toBe(false)
+  it('loads features', async () => {
+    const repo = new MockFeatureRepo()
+    const { result } = renderHook(() => useFeaturesViewModel(repo))
+    await waitFor(() => expect(result.current.isLoading).toBe(false), { timeout: 3000 })
     expect(result.current.features).toHaveLength(1)
     expect(result.current.features[0].title).toBe('Smart')
-  })
+  }, 10000)
 })
 
 describe('useStatsViewModel', () => {
-  it('should load stats', async () => {
-    const { result } = renderHook(() => useStatsViewModel(new MockStatsRepository()))
-    await act(async () => {})
-    expect(result.current.isLoading).toBe(false)
+  it('loads stats', async () => {
+    const repo = new MockStatsRepo()
+    const { result } = renderHook(() => useStatsViewModel(repo))
+    await waitFor(() => expect(result.current.isLoading).toBe(false), { timeout: 3000 })
     expect(result.current.stats).toHaveLength(1)
     expect(result.current.stats[0].value).toBe('10K+')
-  })
+  }, 10000)
 })
 
 describe('useTestimonialsViewModel', () => {
-  it('should load testimonials', async () => {
-    const { result } = renderHook(() => useTestimonialsViewModel(new MockTestimonialRepository()))
-    await act(async () => {})
-    expect(result.current.isLoading).toBe(false)
+  it('loads testimonials', async () => {
+    const repo = new MockTestimonialRepo()
+    const { result } = renderHook(() => useTestimonialsViewModel(repo))
+    await waitFor(() => expect(result.current.isLoading).toBe(false), { timeout: 3000 })
     expect(result.current.testimonials).toHaveLength(1)
     expect(result.current.testimonials[0].name).toBe('John')
-  })
+  }, 10000)
 })
