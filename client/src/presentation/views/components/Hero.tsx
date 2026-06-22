@@ -1,25 +1,30 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useHeroViewModel } from '@/presentation/viewmodels/useHeroViewModel'
 
 export default function Hero() {
-  const containerRef = useRef<HTMLDivElement>(null)
+  const { containerRef } = useHeroViewModel()
 
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      if (!containerRef.current) return
-      const { clientX, clientY } = e
-      const x = (clientX / window.innerWidth - 0.5) * 20
-      const y = (clientY / window.innerHeight - 0.5) * 20
-      containerRef.current.style.transform = `translate(${x}px, ${y}px)`
-    }
-    window.addEventListener('mousemove', handleMouseMove)
-    return () => window.removeEventListener('mousemove', handleMouseMove)
-  }, [])
+  const images = [
+    {
+      src: 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=400&q=80',
+      alt: 'Online learning',
+      className: 'absolute top-0 right-0 w-72 h-72 rounded-3xl overflow-hidden shadow-2xl transform rotate-3',
+    },
+    {
+      src: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=400&q=80',
+      alt: 'Students collaborating',
+      className: 'absolute bottom-20 left-0 w-64 h-64 rounded-3xl overflow-hidden shadow-2xl transform -rotate-3',
+    },
+    {
+      src: 'https://images.unsplash.com/photo-1509062522246-3755977927d7?w=400&q=80',
+      alt: 'Teacher',
+      className: 'absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 rounded-3xl overflow-hidden shadow-2xl transform rotate-6 border-4 border-white/10',
+    },
+  ]
 
   return (
-    <section className="relative min-h-screen flex items-center overflow-hidden bg-gradient-hero">
-      {/* Animated background orbs */}
+    <section id="home" className="relative min-h-screen flex items-center overflow-hidden bg-gradient-hero">
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -top-40 -left-40 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl animate-pulse" />
         <div className="absolute top-1/2 -right-40 w-80 h-80 bg-pink-500/15 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
@@ -59,9 +64,9 @@ export default function Hero() {
 
           <div className="flex items-center gap-8 pt-4">
             <div className="flex -space-x-3">
-              {[1,2,3,4].map(i => (
+              {['👩‍🏫', '👨‍🎓', '👩‍💻', '🧑‍🔬'].map((emoji, i) => (
                 <div key={i} className="w-10 h-10 rounded-full border-2 border-[#0F0C29] bg-gradient-primary flex items-center justify-center text-xs font-bold">
-                  {['👩‍🏫','👨‍🎓','👩‍💻','🧑‍🔬'][i-1]}
+                  {emoji}
                 </div>
               ))}
             </div>
@@ -72,30 +77,13 @@ export default function Hero() {
           </div>
         </div>
 
-        {/* Right side - vivid image collage */}
         <div ref={containerRef} className="relative hidden lg:block transition-transform duration-200 ease-out">
           <div className="relative w-full aspect-square">
-            <div className="absolute top-0 right-0 w-72 h-72 rounded-3xl overflow-hidden shadow-2xl transform rotate-3">
-              <img
-                src="https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=400&q=80"
-                alt="Online learning"
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <div className="absolute bottom-20 left-0 w-64 h-64 rounded-3xl overflow-hidden shadow-2xl transform -rotate-3">
-              <img
-                src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=400&q=80"
-                alt="Students collaborating"
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 rounded-3xl overflow-hidden shadow-2xl transform rotate-6 border-4 border-white/10">
-              <img
-                src="https://images.unsplash.com/photo-1509062522246-3755977927d7?w=400&q=80"
-                alt="Teacher"
-                className="w-full h-full object-cover"
-              />
-            </div>
+            {images.map((img, i) => (
+              <div key={i} className={img.className}>
+                <img src={img.src} alt={img.alt} className="w-full h-full object-cover" />
+              </div>
+            ))}
             <div className="absolute bottom-40 right-10 w-20 h-20 rounded-2xl bg-gradient-accent flex items-center justify-center shadow-lg animate-bounce">
               <span className="text-3xl">🤖</span>
             </div>
@@ -103,7 +91,6 @@ export default function Hero() {
         </div>
       </div>
 
-      {/* Bottom gradient fade */}
       <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#0F0C29] to-transparent" />
     </section>
   )

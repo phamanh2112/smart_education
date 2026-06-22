@@ -15,8 +15,7 @@ export default function CTA() {
           <span className="text-gradient">Education</span>?
         </h2>
         <p className="text-xl text-gray-300 mb-10 max-w-2xl mx-auto">
-          Join thousands of teachers and students already using EduSmart. 
-          Start your journey today.
+          Join thousands of teachers and students already using EduSmart. Start your journey today.
         </p>
         <div className="flex flex-wrap justify-center gap-4">
           <button className="px-10 py-4 rounded-full bg-gradient-primary text-white font-semibold text-lg hover:shadow-lg hover:shadow-purple-500/30 transition-all duration-300 hover:scale-105 glow">
