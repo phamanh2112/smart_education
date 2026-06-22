@@ -52,7 +52,7 @@ A modern online education platform connecting teachers and students through smar
 ### Installation
 
 ```bash
-git clone https://github.com/your-org/education-online-smart.git
+git clone https://github.com/phamanh2112/education-online-smart.git
 cd education-online-smart
 
 # Install dependencies
